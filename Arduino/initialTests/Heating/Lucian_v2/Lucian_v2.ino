@@ -7,10 +7,10 @@ LiquidCrystal lcd(12, 11, 2, 3, 4, 5);
 #define bright 10
 
 //LAMP values
-const double targetTemp = 30;
-const double minTemp = 28;
-const double maxTemp = 32;
-const double endTime = 3;
+const double targetTemp = 24;
+const double minTemp = 22;
+const double maxTemp = 26;
+const double endTime = 1;
 
 //Initialising Pins
 #define thermoPin A0
@@ -18,15 +18,13 @@ const double endTime = 3;
 #define greenLED 7
 #define redLED 8
 
+//Time Variables
+uint32_t timer, timeMinutes, timeSeconds, elapsedTime, startTime;
+
 //NTC Variables
 #define thermoOhm 1000000  //NTC nominal resistance
 #define thermoOhmTemp 25   //NTC temperature for nominal resistance
 #define thermoBeta 3950    //Beta for NTC
-
-//Time Variables
-uint32_t elapsedTime = millis() / 1000;
-uint32_t timeMinutes = elapsedTime / 60;
-uint32_t timeSeconds = elapsedTime % 60;
 
 //Other Variables
 #define seriesResistor 1000000  //Value of R2
@@ -34,8 +32,8 @@ uint32_t timeSeconds = elapsedTime % 60;
 #define numSamples 50
 int samples[numSamples];
 
-uint8_t i;
-double set, adcvalue, thermoValue, steinhart, timer;
+uint8_t i,count;
+double set, adcvalue, thermoValue, steinhart;
 
 //PID initialisation
 const double Kp = 350;
@@ -67,11 +65,13 @@ void setup(void) {
 
 void loop(void) {
   //Start timer if temp is within range
-  if (steinhart >= minTemp){
-    timer = millis();
+
+  if (steinhart >= minTemp && count == 0) {
+    startTimer();
+    count++;
   }
   //Check if time is up
-  if (timer < (endTime * 60000)) {
+  if (timer < (endTime * 60)) {
 
     steinhartCalc();
 
@@ -85,8 +85,7 @@ void loop(void) {
     serialPrint();
 
     delay(500);
-  }
-  else{
+  } else {
     endScreen();
   }
 }
@@ -130,7 +129,6 @@ void steinhartCalc() {
   lcd.print("C");
 }
 
-
 void switchingLEDs() {
   //Turn on red LED if out of temp zone, green if in temp zone and both if the time limit has elapsed
   if (steinhart > minTemp && steinhart < maxTemp) {
@@ -144,6 +142,12 @@ void switchingLEDs() {
 
 void printTime() {
   //Print time elapsed
+  if(startTime){
+    elapsedTime = millis() - startTime;
+    timer = elapsedTime / 1000;
+    timeMinutes = timer / 60;
+    timeSeconds = timer % 60;
+  }
   lcd.setCursor(5, 1);
   lcd.print(timeMinutes);
   lcd.print("m ");
@@ -160,7 +164,8 @@ void serialPrint() {
   Serial.println(set);
 }
 
-void endScreen(){
+void endScreen() {
+  steinhartCalc();
   //Tell user completion and turn both lights on
   lcd.clear();
   lcd.print("Temp:");
@@ -172,6 +177,10 @@ void endScreen(){
 
   digitalWrite(greenLED, HIGH);
   digitalWrite(redLED, HIGH);
+}
+
+void startTimer(){
+  startTime = millis();
 }
 
 /*                      Links
