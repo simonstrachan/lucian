@@ -1,11 +1,12 @@
 //LAMP values
 const float targetTemp = 65;
-const float minTemp = 28;
-const float maxTemp = 32;
+const float minTemp = 63;
+const float maxTemp = 67;
 const float timeMin = 10;
 
 //Initialising Pins
 #define thermoPin A0
+#define extraThermo A1
 #define fetPin 6
 #define greenLED 7
 #define redLED 8
@@ -19,11 +20,13 @@ const float timeMin = 10;
 #define seriesResistor 1000000        //Value of R2
 #define heatAdjust 10                 //Adjustment of voltage to correct temp
 #define numSamples 50
+
 int samples[numSamples];
+int extrasamples[numSamples];
 float timeActual = timeMin * 60000;
-uint8_t i;
+uint8_t i,count;
 int set;
-float adcvalue, thermoValue, steinhart, currentTemp;
+float adcvalue, extraAdcValue, thermoValue, extraThermoValue, steinhart, extraSteinhart, fiveMoreDeg;
 
 void setup(void) {
   Serial.begin(9600);
@@ -38,6 +41,7 @@ void loop(void) {
   //Taking samples
   for (i = 0; i < numSamples; i++) {
     samples[i] = analogRead(thermoPin);
+    extrasamples[i] = analogRead(extraThermo);
     delay(10);
   }
   adcvalue = 0;
@@ -45,9 +49,10 @@ void loop(void) {
   //averaging samples
   for (i = 0; i < numSamples; i++) {
     adcvalue += samples[i];
+    extraAdcValue += extrasamples[i];
   }
   adcvalue /= numSamples;
-
+  extraAdcValue /= numSamples;
 
   /*            Math
      Voltage divider: Vo=Vcc(R2/R1+R2)
@@ -69,23 +74,47 @@ void loop(void) {
   steinhart = 1.0 / steinhart;                    // Invert
   steinhart -= 273.15;                            // convert absolute temp to C
 
-  /*Serial.print("Temp:");
-  Serial.print(steinhart);
-  Serial.print("°C ");*/
+  //Extra Thermo calculation
+  extraThermoValue = -(seriesResistor * extraAdcValue) / (extraAdcValue - 1023);
 
-  currentTemp = steinhart;
-  if (currentTemp <= targetTemp) {
+  extraSteinhart = extraThermoValue / thermoOhm;            // (R/Ro)
+  extraSteinhart = log(extraSteinhart);                     // ln(R/Ro)
+  extraSteinhart /= thermoBeta;                        // 1/B * ln(R/Ro)
+  extraSteinhart += 1.0 / (thermoOhmTemp + 273.15);    // + (1/To)
+  extraSteinhart = 1.0 / extraSteinhart;                    // Invert
+  extraSteinhart -= 273.15;                            // convert absolute temp to C
+
+  if(count <= 1){
+    fiveMoreDeg = steinhart + 45;
+    count++;
+  }
+  if (steinhart <= fiveMoreDeg) {
     set = 255;
   } else {
-    if (currentTemp >= targetTemp) {
+    if (steinhart >= fiveMoreDeg) {
       set = 0;
     }
   }
+  /*
+  if (steinhart <= targetTemp) {
+    set = 255;
+  } else {
+    if (steinhart >= targetTemp) {
+      set = 0;
+    }
+  }*/
+  
   analogWrite(fetPin, set);
   //Serial.print("PWM:");
   Serial.print(steinhart);
-  Serial.print(",");
-  Serial.println(set);
+  Serial.print(", ");
+  Serial.print(extraSteinhart);
+  Serial.print(", ");
+  //Serial.println(set);
+
+  Serial.print(set);
+  Serial.print(", ");
+  Serial.println(fiveMoreDeg);
 
   if (steinhart > minTemp && steinhart < maxTemp) {
     digitalWrite(greenLED, HIGH);
@@ -99,8 +128,8 @@ void loop(void) {
     digitalWrite(greenLED, HIGH);
     digitalWrite(redLED, HIGH);
   }
-
-  delay(1000);
+  delay(500);
+  //delay(1000);
 }
 
 /*                      Links

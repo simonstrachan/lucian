@@ -10,7 +10,7 @@ LiquidCrystal lcd(12, 11, 2, 3, 4, 5);
 const double targetTemp = 24;
 const double minTemp = 22;
 const double maxTemp = 26;
-const double endTime = 1;
+const double endTime = 0.5;
 
 //Initialising Pins
 #define thermoPin A0
