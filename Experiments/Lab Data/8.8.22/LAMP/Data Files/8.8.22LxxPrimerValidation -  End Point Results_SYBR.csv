@@ -1,0 +1,8 @@
+,Well,Fluor,Target,Content,Sample,End RFU,Call,Sample Type,CallType,Is Control
+,A05,SYBR,,Unkn-1,Flo_Lxx,433.626002934504,(+) Positive,Unknown,Positive,False
+,B05,SYBR,,Unkn-1,Flo_Lxx,-2.19365784486272,,Unknown,NoCall,False
+,C05,SYBR,,Unkn-1,Flo_Lxx,-1.32273296546582,,Unknown,NoCall,False
+,D05,SYBR,,Unkn-2,Colour_Lxx,10.2756460045573,,Unknown,NoCall,False
+,E05,SYBR,,Unkn-2,Colour_Lxx,25.4787087118053,,Unknown,NoCall,False
+,F05,SYBR,,Unkn-2,Colour_Lxx,10.211475234844,,Unknown,NoCall,False
+,H05,SYBR,,Neg Ctrl,Water,0.915426434415895,,ControlNegative,Negative,True

@@ -1,0 +1,8 @@
+Descending order:
+A05
+E05
+D05
+F05
+C05
+B05
+H05

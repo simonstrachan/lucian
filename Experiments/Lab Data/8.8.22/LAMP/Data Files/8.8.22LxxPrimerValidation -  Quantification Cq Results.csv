@@ -1,0 +1,8 @@
+,Well,Fluor,Target,Content,Sample,Biological Set Name,Cq,Cq Mean,Cq Std. Dev,Starting Quantity (SQ),Log Starting Quantity,SQ Mean,SQ Std. Dev,Set Point,Well Note
+,A05,SYBR,,Unkn-1,Flo_Lxx,,NaN,0,0,NaN,NaN,0,0,65,
+,B05,SYBR,,Unkn-1,Flo_Lxx,,NaN,0,0,NaN,NaN,0,0,65,
+,C05,SYBR,,Unkn-1,Flo_Lxx,,NaN,0,0,NaN,NaN,0,0,65,
+,D05,SYBR,,Unkn-2,Colour_Lxx,,NaN,0,0,NaN,NaN,0,0,65,
+,E05,SYBR,,Unkn-2,Colour_Lxx,,NaN,0,0,NaN,NaN,0,0,65,
+,F05,SYBR,,Unkn-2,Colour_Lxx,,NaN,0,0,NaN,NaN,0,0,65,
+,H05,SYBR,,Neg Ctrl,Water,,NaN,0,0,NaN,NaN,0,0,65,
