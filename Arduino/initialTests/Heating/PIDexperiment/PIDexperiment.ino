@@ -39,9 +39,9 @@ double adcvalue, extraAdcValue, thermoValue, extraThermoValue, steinhart, extraS
 char timeline[20];
 
 //PID initialisation
-const double Kp = 1;
-const double Ki = 1;
-const double Kd = 1;
+const double Kp = 20;
+const double Ki = 5;
+const double Kd = 2.5;
 PID myPID(&steinhart, &set, &targetTemp, Kp, Ki, Kd, DIRECT);
 
 void setup(void) {
@@ -55,9 +55,9 @@ void setup(void) {
   digitalWrite(contrast, LOW);
   analogWrite(bright, 255);
 
-  lcd.print("Temp:         11");
+  lcd.print("Temp:        205");
   lcd.setCursor(0, 1);
-  lcd.print("Time:          1");
+  lcd.print("Time:        2.5");
 
   myPID.SetMode(AUTOMATIC);
 
@@ -165,8 +165,8 @@ void printTime() {
 
 void serialPrint() {
   Serial.print(steinhart);
-  Serial.print(", ");
-  Serial.print(extraSteinhart);
+  //Serial.print(", ");
+  //Serial.print(extraSteinhart);
   Serial.print(", ");
   Serial.println(set);
 }
